@@ -33,7 +33,7 @@ public class Entity {
 	
 	@Override
 	public String toString() {
-		StringBuffer entity = new StringBuffer();
+		StringBuilder entity = new StringBuilder();
 		entity.append(vars.toString());
 		entity.append(method);
 		entity.append(data);

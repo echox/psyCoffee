@@ -24,7 +24,7 @@ public class Packet {
 	@Override
 	//TODO escape |, use content length
 	public String toString() {
-		StringBuffer packet = new StringBuffer();
+		StringBuilder packet = new StringBuilder();
 		packet.append("|\n");
 		packet.append(routingHeader.toString());
 		packet.append("\n");

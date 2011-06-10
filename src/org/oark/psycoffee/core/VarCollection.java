@@ -118,7 +118,7 @@ public class VarCollection {
 	@Override
 	//TODO operators missing, : is always used
 	public String toString() {
-		StringBuffer vars = new StringBuffer();
+		StringBuilder vars = new StringBuilder();
 		for (Entry<String, String> var : this.vars.entrySet()) {
 			vars.append(":" + var.getKey() + " " + var.getValue() + "\n");
 		}
