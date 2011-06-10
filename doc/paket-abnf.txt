@@ -31,4 +31,15 @@ ABNF taken from: http://about.psyc.eu/Spec:Syntax
   nonlchar   = %x00-09 / %x0B-FF             ; basically any byte except newline
   kwchar     = <alpha numeric ASCII char or "_">
   
+  
+Either text-data or binary-data can contain lists, which adhere to the following syntax (in ABNF):
+  
+  list         =  binary-elem *("|" binary-elem)  ; for binary values
+              =/ "|" text-elem *("|" text-elem)  ; for visible/non-binary characters
+  binary-elem  = length SP binary-data
+  text-elem    = *nonlpipechar
+  nonlpipechar = %x00-09 / %x0B-7B / %x7D-FF ; any byte except newline and "|"
+  
+Either format can appear in either data container! This list syntax is only valid for variables of the _list type that start with _list.
+  
 For the definition of DIGIT, VCHAR, SP, LF and HTAB see RFC 2234 (ABNF).
