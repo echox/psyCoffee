@@ -1,0 +1,34 @@
+ABNF taken from: http://about.psyc.eu/Spec:Syntax
+  
+  packet     = routing-header [ content-length content ] "|" LF
+             ; the length of content is either implicit (scan until LF "|" LF)
+             ; or explicitly reported in content-length.
+  
+  routing-header = *routing-modifier
+  entity-header  = *entity-modifier
+  content        = entity-header [ body LF ]
+  content-length = [ length ] LF
+  
+  routing-modifier = operator variable ( simple-arg / LF )
+  entity-modifier  = operator variable ( simple-arg / binary-arg / LF )
+  
+  body       = method [ LF data ]
+  
+  operator   = "=" / ":" / "+" / "-" / "?" / "!" / <more reserved glyphs>
+  simple-arg = HTAB text-data LF
+  binary-arg = SP length HTAB binary-data LF
+  
+  length      = 1*DIGIT
+  binary-data = <a length byte long byte sequence>
+  
+  method     = 1*kwchar
+  variable   = 1*kwchar
+  text-data  = *nonlchar
+  
+  data       = <amount of bytes as given by length or until
+                the (LF "|" LF) sequence has been encountered>
+  
+  nonlchar   = %x00-09 / %x0B-FF             ; basically any byte except newline
+  kwchar     = <alpha numeric ASCII char or "_">
+  
+For the definition of DIGIT, VCHAR, SP, LF and HTAB see RFC 2234 (ABNF).
