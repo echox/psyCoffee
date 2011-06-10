@@ -12,7 +12,7 @@ public class Entity {
 
 	private VarCollection vars = new VarCollection();
 	private String method = new String();
-	private String data;
+	private String data = new String();
 	
 	public VarCollection getVars() {
 		return vars;
