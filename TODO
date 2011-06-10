@@ -6,3 +6,4 @@ Minor tasks will be scattered over the code with a //TODO prefix
 
 * maybe breakup vars in different content types (strings, URIs, etc.)
 * maybe add a strict mode for list handling in vars
+* append operators to VarCollection class
