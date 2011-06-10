@@ -120,7 +120,7 @@ public class VarCollection {
 	public String toString() {
 		StringBuilder vars = new StringBuilder();
 		for (Entry<String, String> var : this.vars.entrySet()) {
-			vars.append(":" + var.getKey() + " " + var.getValue() + "\n");
+			vars.append(":" + var.getKey() + "\t" + var.getValue() + "\n");
 		}
 		for (Entry<String, List<String>> listVar : this.listVars.entrySet()) {
 			vars.append(":" + listVar.getKey() + " ");

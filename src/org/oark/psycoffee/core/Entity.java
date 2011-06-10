@@ -35,7 +35,7 @@ public class Entity {
 	public String toString() {
 		StringBuilder entity = new StringBuilder();
 		entity.append(vars.toString());
-		entity.append(method);
+		entity.append(method + "\n");
 		entity.append(data);
 		return entity.toString();
 	}

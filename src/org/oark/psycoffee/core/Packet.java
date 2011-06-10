@@ -29,7 +29,7 @@ public class Packet {
 		packet.append(routingHeader.toString());
 		packet.append("\n");
 		packet.append(entity.toString());
-		packet.append("|\n");
+		packet.append("|");
 		return packet.toString();
 	}
 	
