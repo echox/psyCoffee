@@ -3,8 +3,6 @@ package org.oark.psycoffee.core;
 /**
  * payload of the package
  * 
- * //TODO escape |, use content length
- * 
  * @author Simon Koelsch
  *
  */
@@ -33,5 +31,12 @@ public class Entity {
 		this.data = data;
 	}
 	
-	
+	@Override
+	public String toString() {
+		StringBuffer entity = new StringBuffer();
+		entity.append(vars.toString());
+		entity.append(method);
+		entity.append(data);
+		return entity.toString();
+	}
 }

@@ -20,6 +20,18 @@ public class Packet {
 	public void setEntity(Entity entity) {
 		this.entity = entity;
 	}
+
+	@Override
+	//TODO escape |, use content length
+	public String toString() {
+		StringBuffer packet = new StringBuffer();
+		packet.append("|\n");
+		packet.append(routingHeader.toString());
+		packet.append("\n");
+		packet.append(entity.toString());
+		packet.append("|\n");
+		return packet.toString();
+	}
 	
 	
 }
