@@ -8,3 +8,5 @@ Minor tasks will be scattered over the code with a //TODO prefix
 * maybe add a strict mode for list handling in vars
 * append operators to VarCollection class
 * write more junit tests for the methods
+* add sanity checks, for example usage of the "+" operater without _context set
+* add equals method for Packet class
