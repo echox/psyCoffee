@@ -4,7 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+/**
+ * This class represents a set of variables
+ * 
+ * variables can be single values or a list of variables prefixed with the LIST_PREFIX
+ * 
+ * //TODO proper escaping with length in toString() 
+ * //TODO add support for operators
+ * 
+ * @author Simon Koelsch
+ *
+ */
 public class VarCollection {
 	
 	public static final String LIST_PREFIX = "_list_";
@@ -103,6 +115,25 @@ public class VarCollection {
 		return false;
 	}
 	
+	@Override
+	//TODO operators missing, : is always used
+	public String toString() {
+		StringBuffer vars = new StringBuffer();
+		for (Entry<String, String> var : this.vars.entrySet()) {
+			vars.append(":" + var.getKey() + " " + var.getValue() + "\n");
+		}
+		for (Entry<String, List<String>> listVar : this.listVars.entrySet()) {
+			vars.append(":" + listVar.getKey() + " ");
+			List<String> list = listVar.getValue();
+			vars.append(list.get(0));
+			for(int i=1; i <= list.size(); i++) {
+				vars.append("|" + list.get(i));
+			}
+			vars.append("\n");
+		} 
+		return vars.toString();
+	}
+
 	private boolean isListKey(String key) {
 		return key.startsWith(LIST_PREFIX);
 	}
