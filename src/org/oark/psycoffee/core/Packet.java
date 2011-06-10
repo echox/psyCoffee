@@ -12,4 +12,14 @@ public class Packet {
 	public void setRoutingHeader(VarCollection header) {
 		this.routingHeader = header;
 	}
+
+	public Entity getEntity() {
+		return entity;
+	}
+
+	public void setEntity(Entity entity) {
+		this.entity = entity;
+	}
+	
+	
 }
