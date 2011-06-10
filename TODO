@@ -1,3 +1,4 @@
 TODO
 
 * maybe breakup vars in different content types (strings, URIs, etc.)
+* maybe add a strict mode for list handling in vars
