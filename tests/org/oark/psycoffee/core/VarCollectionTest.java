@@ -100,4 +100,12 @@ public class VarCollectionTest {
 		assertEquals("value1", collection.getVarValues("key1").get(0).getValue());
 		assertEquals(Operators.PERSIST, collection.getVarValues("key1").get(0).getOperator());
 	}
+	
+	//TODO add test for setList
+	//TODO add test for addList
+	//TODO add test for setVar
+	//TODO add test for removeValue
+	//TODO add test for removeVar
+	
+	//TODO maybe add detailed test for toString
 }
