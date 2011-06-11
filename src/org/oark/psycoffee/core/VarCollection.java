@@ -150,7 +150,7 @@ public class VarCollection {
 			List<VarValue> list = listVars.get(name);
 			for (Iterator<VarValue> it = list.iterator(); it.hasNext();) {
 				VarValue varValue = it.next();
-				if(varValue.value == content) {
+				if(varValue.getValue() == content) {
 					it.remove();
 					removed = true;
 				}
@@ -169,14 +169,14 @@ public class VarCollection {
 		StringBuilder vars = new StringBuilder();
 		for (Entry<String, VarValue> var : this.vars.entrySet()) {
 			VarValue value = var.getValue();
-			vars.append(value.operator + var.getKey() + "\t" + value.value + "\n");
+			vars.append(value.getOperator() + var.getKey() + "\t" + value.getValue() + "\n");
 		}
 		for (Entry<String, List<VarValue>> listVar : this.listVars.entrySet()) {
-			vars.append(listVar.getValue().get(0).operator + listVar.getKey() + " ");
+			vars.append(listVar.getValue().get(0).getOperator() + listVar.getKey() + " ");
 			List<VarValue> list = listVar.getValue();
-			vars.append(list.get(0).value);
+			vars.append(list.get(0).getValue());
 			for(int i=1; i <= list.size(); i++) {
-				vars.append("|" + list.get(i).value);
+				vars.append("|" + list.get(i).getValue());
 			}
 			vars.append("\n");
 		} 

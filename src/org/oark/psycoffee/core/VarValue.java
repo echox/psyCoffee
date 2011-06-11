@@ -19,8 +19,24 @@ import org.oark.psycoffee.core.constants.Operators;
 
 public class VarValue {
 	
-	public String value = new String();
-	public String operator = new String();
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getOperator() {
+		return operator;
+	}
+
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
+
+	private String value = new String();
+	private String operator = new String();
 	
 	public VarValue() {
 		this.operator = Operators.CURRENT;
