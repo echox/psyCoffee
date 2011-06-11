@@ -15,8 +15,6 @@
  */
 package org.oark.psycoffee.core.constants;
 
-
-//TODO rethink this
 /**
  * collected constants for operators
  * 
