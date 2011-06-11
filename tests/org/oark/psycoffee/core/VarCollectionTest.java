@@ -28,11 +28,11 @@ public class VarCollectionTest {
 	public void testGetListKey() {
 		String key = "foo";
 		String listKey = VarCollection.getListKey(key);
-		assertEquals(listKey, "_list_foo");
+		assertEquals("_list_foo", listKey);
 		
 		key = "_bar";
 		listKey = VarCollection.getListKey(key);
-		assertEquals(listKey, "_list_bar");
+		assertEquals("_list_bar",listKey);
 	}
 	
 	@Test
@@ -66,29 +66,38 @@ public class VarCollectionTest {
 		collection.addVar("val", "list2", Operators.PERSIST);
 		collection.addVar("_list_single", "single", Operators.DELETE);
 		
-		assertEquals(collection.getVarValue("key1").getValue(), "value1");
-		assertEquals(collection.getVarValue("key1").getOperator(), Operators.CURRENT);
-		assertEquals(collection.getVarValue("key2").getValue(), "value2");
-		assertEquals(collection.getVarValue("key2").getOperator(), Operators.PERSIST);
+		assertEquals("value1",collection.getVarValue("key1").getValue());
+		assertEquals(Operators.CURRENT, collection.getVarValue("key1").getOperator());
+		assertEquals("value2", collection.getVarValue("key2").getValue());
+		assertEquals(Operators.PERSIST, collection.getVarValue("key2").getOperator());
 		
 		List<VarValue> list = collection.getVarValues("key3");
-		assertEquals(list.size(), 1);
-		assertEquals(list.get(0).getValue(), "value3");
-		assertEquals(list.get(0).getOperator(), Operators.ADD);
+		assertEquals(1, list.size());
+		assertEquals("value3", list.get(0).getValue());
+		assertEquals(Operators.ADD, list.get(0).getOperator());
 		
 		assertNull(collection.getVarValue("val"));
 		assertNull(collection.getVarValue("_list_val"));
-		assertEquals(collection.getVarValues("_list_val").size(),2);
-		assertEquals(collection.getVarValues("_list_val").get(0).getValue(),"list1");
+		assertEquals(2, collection.getVarValues("_list_val").size());
+		assertEquals("list1", collection.getVarValues("_list_val").get(0).getValue());
 		assertEquals(Operators.PERSIST, collection.getVarValues("_list_val").get(0).getOperator());
-		assertEquals(collection.getVarValues("_list_val").get(1).getValue(),"list2");
-		assertEquals(collection.getVarValues("_list_val").get(1).getOperator(),Operators.PERSIST);
+		assertEquals("list2",collection.getVarValues("_list_val").get(1).getValue());
+		assertEquals(Operators.PERSIST, collection.getVarValues("_list_val").get(1).getOperator());
 		
 		assertNull(collection.getVarValue("_list_single"));
-		assertEquals(collection.getVarValues("_list_single").size(),1);
-		assertEquals(collection.getVarValues("_list_single").get(0).getValue(),"single");
-		assertEquals(collection.getVarValues("_list_single").get(0).getOperator(),Operators.DELETE);
-		
-		
+		assertEquals(1, collection.getVarValues("_list_single").size());
+		assertEquals("single", collection.getVarValues("_list_single").get(0).getValue());
+		assertEquals(Operators.DELETE, collection.getVarValues("_list_single").get(0).getOperator());
+	}
+	
+	@Test
+	public void testGetVar() {
+		VarCollection collection = new VarCollection();
+
+		collection.addVar("key1", "value1", Operators.PERSIST);
+
+		assertEquals(1,collection.getVarValues("key1").size());
+		assertEquals("value1", collection.getVarValues("key1").get(0).getValue());
+		assertEquals(Operators.PERSIST, collection.getVarValues("key1").get(0).getOperator());
 	}
 }
