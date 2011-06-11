@@ -64,6 +64,7 @@ public class VarCollectionTest {
 		collection.addVar("key3", "value3", Operators.ADD);
 		collection.addVar("val", "list1", Operators.CURRENT);
 		collection.addVar("val", "list2", Operators.PERSIST);
+		collection.addVar("_list_single", "single", Operators.DELETE);
 		
 		assertEquals(collection.getVarValue("key1").getValue(), "value1");
 		assertEquals(collection.getVarValue("key1").getOperator(), Operators.CURRENT);
@@ -79,9 +80,15 @@ public class VarCollectionTest {
 		assertNull(collection.getVarValue("_list_val"));
 		assertEquals(collection.getVarValues("_list_val").size(),2);
 		assertEquals(collection.getVarValues("_list_val").get(0).getValue(),"list1");
-		assertEquals(collection.getVarValues("_list_val").get(0).getOperator(),Operators.PERSIST);
+		assertEquals(Operators.PERSIST, collection.getVarValues("_list_val").get(0).getOperator());
 		assertEquals(collection.getVarValues("_list_val").get(1).getValue(),"list2");
 		assertEquals(collection.getVarValues("_list_val").get(1).getOperator(),Operators.PERSIST);
+		
+		assertNull(collection.getVarValue("_list_single"));
+		assertEquals(collection.getVarValues("_list_single").size(),1);
+		assertEquals(collection.getVarValues("_list_single").get(0).getValue(),"single");
+		assertEquals(collection.getVarValues("_list_single").get(0).getOperator(),Operators.DELETE);
+		
 		
 	}
 }

@@ -63,10 +63,11 @@ public class VarCollection {
 			if (vars.containsKey(name)) {
 				// remove from var and add to lists
 				VarValue existingValue = this.vars.get(name);
+				existingValue.setOperator(operator);
 				List<VarValue> list = new ArrayList<VarValue>();
 				list.add(existingValue);
 				list.add(value);
-				this.listVars.put(name,list);
+				this.listVars.put(getListKey(name),list);
 				this.vars.remove(name);
 			} else {
 				this.vars.put(name, value);
