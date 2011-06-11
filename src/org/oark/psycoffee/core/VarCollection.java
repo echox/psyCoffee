@@ -38,7 +38,6 @@ public class VarCollection {
 	
 	public static final String LIST_PREFIX = "_list_";
 
-	//TODO maybe breakup in content types
 	private Map<String, VarValue> vars = new HashMap<String, VarValue>();
 	private Map<String, List<VarValue>> listVars = new HashMap<String, List<VarValue>>();
 	
@@ -46,6 +45,7 @@ public class VarCollection {
 	 * adds the value as a variable
 	 * 
 	 * if a value with this name already exists, it will be added with the existing value as a list variable
+	 * if the operators differ, the old value will be overwritten
 	 * 
 	 * @param name
 	 * @param value
@@ -58,9 +58,9 @@ public class VarCollection {
 		
 		if (isListKey(name)) {
 			// add explicitly as list
-			List<VarValue> list = new ArrayList<VarValue>();
-			list.add(value);
-			addList(name, list);
+			List<String> list = new ArrayList<String>();
+			list.add(content);
+			addList(name, list, operator);
 		} else {
 			if (vars.containsKey(name)) {
 				// remove from var and add to lists
@@ -68,7 +68,7 @@ public class VarCollection {
 				List<VarValue> list = new ArrayList<VarValue>();
 				list.add(existingValue);
 				list.add(value);
-				addList(name, list);
+				this.listVars.put(name,list);
 				this.vars.remove(name);
 			} else {
 				this.vars.put(name, value);
@@ -94,28 +94,34 @@ public class VarCollection {
 		setVar(name, content, Operators.CURRENT);
 	}
 	
-	public void setList(String name, List<VarValue> list) {
+	public void setList(String name, List<String> list, String operator) {
 		
-		//TODO check for same operators if its a list
+		List<VarValue> varList = VarHelper.getVarList(list, operator);
 
-		this.listVars.put(getListKey(name), list);
+		this.listVars.put(getListKey(name), varList);
 	}
 	
+	public void setList(String name, List<String> list) {
+		setList(name, list, Operators.CURRENT);
+	}
 	
-	public void addList(String name, List<VarValue> list) {
-		
-		//TODO check for same operators if its a list
+	public void addList(String name, List<String> list, String operator) {
 		
 		if (!name.startsWith(LIST_PREFIX)) {
 			name = getListKey(name);
 		}
 		
 		if (this.vars.containsKey(name)) {
+			List<VarValue> varList = VarHelper.getVarList(list, operator);
 			List<VarValue> existingList = this.listVars.get(name);
-			existingList.addAll(list);
+			existingList.addAll(varList);
 		} else {
-			setList(name, list);
+			setList(name, list, operator);
 		}
+	}
+	
+	public void addList(String name, List<String> list) {
+		addList(name, list, Operators.CURRENT);
 	}
 	
 	public void removeVar(String name) {
