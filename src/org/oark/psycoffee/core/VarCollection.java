@@ -36,7 +36,7 @@ import org.oark.psycoffee.core.constants.Operators;
  */
 public class VarCollection {
 	
-	public static final String LIST_PREFIX = "_list_";
+	public static final String LIST_PREFIX = "_list";
 
 	private Map<String, VarValue> vars = new HashMap<String, VarValue>();
 	private Map<String, List<VarValue>> listVars = new HashMap<String, List<VarValue>>();
@@ -181,12 +181,15 @@ public class VarCollection {
 		return vars.toString();
 	}
 
-	private boolean isListKey(String key) {
-		return key.startsWith(LIST_PREFIX);
+	protected static boolean isListKey(String key) {
+		return key != null && key.startsWith(LIST_PREFIX+"_") && (!key.endsWith(LIST_PREFIX+"_"));
 	}
 	
-	private String getListKey(String key) {
+	protected static String getListKey(String key) {
 		if (!isListKey(key)) {
+			if(!key.startsWith("_")) {
+				key = "_" + key;
+			}
 			key = LIST_PREFIX + key;
 		} 
 		return key;
