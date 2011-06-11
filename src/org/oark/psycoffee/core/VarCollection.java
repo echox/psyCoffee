@@ -51,8 +51,6 @@ public class VarCollection {
 	 * @param value
 	 */
 	public void addVar(String name, String content, String operator) {
-	
-		//TODO check for same operators if its a list
 		
 		VarValue value = new VarValue(content, operator);
 		
