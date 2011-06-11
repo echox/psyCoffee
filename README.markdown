@@ -6,3 +6,5 @@ PSYC is a protocol for a messaging infrastructure for text-based communication, 
 More Information on PSYC resides at http://www.psyc.eu.
 
 **Disclaimer:** psyCoffee is currently under heavy development and in this state not usable.
+
+License: ISC (equivalent to 2-clause BSD license)
