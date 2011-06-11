@@ -17,9 +17,12 @@ package org.oark.psycoffee.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.oark.psycoffee.core.constants.Operators;
 
 /**
  * This class represents a set of variables
@@ -27,7 +30,6 @@ import java.util.Map.Entry;
  * variables can be single values or a list of variables prefixed with the LIST_PREFIX
  * 
  * //TODO proper escaping with length in toString() 
- * //TODO add support for operators
  * 
  * @author Simon Koelsch
  *
@@ -37,8 +39,8 @@ public class VarCollection {
 	public static final String LIST_PREFIX = "_list_";
 
 	//TODO maybe breakup in content types
-	private Map<String, String> vars = new HashMap<String, String>();
-	private Map<String, List<String>> listVars = new HashMap<String, List<String>>();
+	private Map<String, VarValue> vars = new HashMap<String, VarValue>();
+	private Map<String, List<VarValue>> listVars = new HashMap<String, List<VarValue>>();
 	
 	/**
 	 * adds the value as a variable
@@ -48,17 +50,22 @@ public class VarCollection {
 	 * @param name
 	 * @param value
 	 */
-	public void addVar(String name, String value) {
+	public void addVar(String name, String content, String operator) {
+	
+		//TODO check for same operators if its a list
+		
+		VarValue value = new VarValue(content, operator);
+		
 		if (isListKey(name)) {
 			// add explicitly as list
-			List<String> list = new ArrayList<String>();
+			List<VarValue> list = new ArrayList<VarValue>();
 			list.add(value);
 			addList(name, list);
 		} else {
 			if (vars.containsKey(name)) {
 				// remove from var and add to lists
-				String existingValue = this.vars.get(name);
-				List<String> list = new ArrayList<String>();
+				VarValue existingValue = this.vars.get(name);
+				List<VarValue> list = new ArrayList<VarValue>();
 				list.add(existingValue);
 				list.add(value);
 				addList(name, list);
@@ -70,26 +77,41 @@ public class VarCollection {
 
 	}
 	
-	public void setVar(String name, String value) {
-		if (value == null) {
+	public void addVar(String name, String content) {
+		addVar(name, content, Operators.CURRENT);
+	}
+	
+	public void setVar(String name, String content, String operator) {
+		if (content == null) {
 			removeVar(name);
 		} else {
+			VarValue value = new VarValue(content, operator);
 			this.vars.put(name, value);
 		}
 	}
 	
-	public void setList(String name, List<String> list) {
+	public void setVar(String name, String content) {
+		setVar(name, content, Operators.CURRENT);
+	}
+	
+	public void setList(String name, List<VarValue> list) {
+		
+		//TODO check for same operators if its a list
+
 		this.listVars.put(getListKey(name), list);
 	}
 	
-	public void addList(String name, List<String> list) {
+	
+	public void addList(String name, List<VarValue> list) {
+		
+		//TODO check for same operators if its a list
 		
 		if (!name.startsWith(LIST_PREFIX)) {
 			name = getListKey(name);
 		}
 		
 		if (this.vars.containsKey(name)) {
-			List<String> existingList = this.listVars.get(name);
+			List<VarValue> existingList = this.listVars.get(name);
 			existingList.addAll(list);
 		} else {
 			setList(name, list);
@@ -114,35 +136,41 @@ public class VarCollection {
 	 * @param value
 	 * @return false if the value wasn't found.
 	 */
-	public boolean removeValue(String name, String value) {
+	public boolean removeValue(String name, String content) {
+		
+		boolean removed = false;
 		
 		if(this.listVars.containsKey(getListKey(name))) {
-			List<String> list = listVars.get(name);
-			if(list.contains(value)) {
-				list.remove(list.indexOf(value));
-				if (list.isEmpty()) {
-					removeVar(name);
+			List<VarValue> list = listVars.get(name);
+			for (Iterator<VarValue> it = list.iterator(); it.hasNext();) {
+				VarValue varValue = it.next();
+				if(varValue.value == content) {
+					it.remove();
+					removed = true;
 				}
-				return true;
+			}
+			
+			if (list.isEmpty()) {
+				removeVar(name);
 			}
 		}
 		
-		return false;
+		return removed;
 	}
 	
 	@Override
-	//TODO operators missing, : is always used
 	public String toString() {
 		StringBuilder vars = new StringBuilder();
-		for (Entry<String, String> var : this.vars.entrySet()) {
-			vars.append(":" + var.getKey() + "\t" + var.getValue() + "\n");
+		for (Entry<String, VarValue> var : this.vars.entrySet()) {
+			VarValue value = var.getValue();
+			vars.append(value.operator + var.getKey() + "\t" + value.value + "\n");
 		}
-		for (Entry<String, List<String>> listVar : this.listVars.entrySet()) {
-			vars.append(":" + listVar.getKey() + " ");
-			List<String> list = listVar.getValue();
-			vars.append(list.get(0));
+		for (Entry<String, List<VarValue>> listVar : this.listVars.entrySet()) {
+			vars.append(listVar.getValue().get(0).operator + listVar.getKey() + " ");
+			List<VarValue> list = listVar.getValue();
+			vars.append(list.get(0).value);
 			for(int i=1; i <= list.size(); i++) {
-				vars.append("|" + list.get(i));
+				vars.append("|" + list.get(i).value);
 			}
 			vars.append("\n");
 		} 
