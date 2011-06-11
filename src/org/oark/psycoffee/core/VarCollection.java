@@ -75,6 +75,24 @@ public class VarCollection {
 
 	}
 	
+	public VarValue getVarValue(String name) {
+		return this.vars.get(name);
+	}
+	
+	public List<VarValue> getVarValues(String name) {
+		List<VarValue> list;
+		if (this.listVars.containsKey(name)) {
+			list = this.listVars.get(name);
+		} else {
+			list = new ArrayList<VarValue>();
+			if (this.vars.containsKey(name)) {
+				list.add(this.vars.get(name));
+			}
+		}
+		
+		return list;
+	}
+	
 	public void addVar(String name, String content) {
 		addVar(name, content, Operators.CURRENT);
 	}

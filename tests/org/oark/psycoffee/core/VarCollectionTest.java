@@ -17,7 +17,10 @@ package org.oark.psycoffee.core;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Test;
+import org.oark.psycoffee.core.constants.Operators;
 
 public class VarCollectionTest {
 
@@ -50,5 +53,35 @@ public class VarCollectionTest {
 		assertFalse(VarCollection.isListKey(noKey3));
 		assertFalse(VarCollection.isListKey(noKey4));
 		assertFalse(VarCollection.isListKey(noKey5));
+	}
+	
+	@Test
+	public void testAddVar() {
+		VarCollection collection = new VarCollection();
+		
+		collection.addVar("key1", "value1");
+		collection.addVar("key2", "value2", Operators.PERSIST);
+		collection.addVar("key3", "value3", Operators.ADD);
+		collection.addVar("val", "list1", Operators.CURRENT);
+		collection.addVar("val", "list2", Operators.PERSIST);
+		
+		assertEquals(collection.getVarValue("key1").getValue(), "value1");
+		assertEquals(collection.getVarValue("key1").getOperator(), Operators.CURRENT);
+		assertEquals(collection.getVarValue("key2").getValue(), "value2");
+		assertEquals(collection.getVarValue("key2").getOperator(), Operators.PERSIST);
+		
+		List<VarValue> list = collection.getVarValues("key3");
+		assertEquals(list.size(), 1);
+		assertEquals(list.get(0).getValue(), "value3");
+		assertEquals(list.get(0).getOperator(), Operators.ADD);
+		
+		assertNull(collection.getVarValue("val"));
+		assertNull(collection.getVarValue("_list_val"));
+		assertEquals(collection.getVarValues("_list_val").size(),2);
+		assertEquals(collection.getVarValues("_list_val").get(0).getValue(),"list1");
+		assertEquals(collection.getVarValues("_list_val").get(0).getOperator(),Operators.PERSIST);
+		assertEquals(collection.getVarValues("_list_val").get(1).getValue(),"list2");
+		assertEquals(collection.getVarValues("_list_val").get(1).getOperator(),Operators.PERSIST);
+		
 	}
 }
