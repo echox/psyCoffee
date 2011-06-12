@@ -192,7 +192,7 @@ public class VarCollection {
 			vars.append(listVar.getValue().get(0).getOperator() + listVar.getKey() + " ");
 			List<VarValue> list = listVar.getValue();
 			vars.append(list.get(0).getValue());
-			for(int i=1; i <= list.size(); i++) {
+			for(int i=1; i < list.size(); i++) {
 				vars.append("|" + list.get(i).getValue());
 			}
 			vars.append("\n");
