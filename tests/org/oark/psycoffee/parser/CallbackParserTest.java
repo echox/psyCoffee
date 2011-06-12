@@ -31,6 +31,28 @@ public class CallbackParserTest {
 		   + "Hello [_nick].\n"
 		   + "\n"
 		   + "more text\n"
+		   + "|\n" 
+		   + "######TRASH\n" 
+		   +"|\n" 
+		   + ":_source\tpsyc://example.symlynX.com/~fippo\n" 
+		   + ":_target\tpsyc://ente.aquarium.example.org:-32872\n" 
+		   + "\n" 
+		   + ":_nick\tfippo\n" 
+		   + "_info_nickname\n"
+		   + "Hello [_nick].\n"
+		   + "\n"
+		   + "more text\n"
+		   + "|";
+	
+	public static String onePacket = "|\n" 
+		   + ":_source\tpsyc://example.symlynX.com/~fippo\n" 
+		   + ":_target\tpsyc://ente.aquarium.example.org:-32872\n" 
+		   + "\n" 
+		   + ":_nick\tfippo\n" 
+		   + "_info_nickname\n"
+		   + "Hello [_nick].\n"
+		   + "\n"
+		   + "more text\n"
 		   + "|";
 	
 	public class cb implements Callback {
@@ -38,7 +60,7 @@ public class CallbackParserTest {
 		@Override
 		public void parsed(Packet packet, Context context) {
 			
-			assertTrue(example.equals(packet.toString()));
+			assertTrue(onePacket.equals(packet.toString()));
 		}
 		
 	}

@@ -66,14 +66,12 @@ public class CallbackParser {
 		
 		//TODO cleanup this mess! :-)
 		
-		//TODO parse input, create packet
-		Packet packet = new Packet();
-		
 		//TODO replace with a more efficient method
 		String[] lines = raw.split("\n");
 		
 		boolean inPacket = false;
 		boolean gotMethod = false;
+		Packet packet = new Packet();
 		VarCollection vars = packet.getRoutingVars();
 		StringBuffer payload = new StringBuffer();
 		for (int i = 0; i < lines.length; i++) {
@@ -105,8 +103,17 @@ public class CallbackParser {
 						gotMethod = true;
 					} else if (gotMethod == true) {
 						if ("|".equals(line)) {
+							
+							//finish packet and do callbacks
 							packet.setPayload(payload.toString());
+							doCallbacks(packet, context);
+							
+							//reset
 							inPacket = false;
+							gotMethod = false;
+							packet = new Packet();
+							vars = packet.getRoutingVars();
+							payload = new StringBuffer();
 						} else {
 							payload.append(line+"\n");
 						}
@@ -120,10 +127,6 @@ public class CallbackParser {
 			}
 		}
 		
-		
-		
-		doCallbacks(packet, context);
-			
 	}
 	
 	private boolean isOperator(String operator) {
