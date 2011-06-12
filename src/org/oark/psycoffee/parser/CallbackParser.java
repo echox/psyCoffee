@@ -16,11 +16,18 @@
 package org.oark.psycoffee.parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.oark.psycoffee.core.Context;
+import org.oark.psycoffee.core.Packet;
+import org.oark.psycoffee.parser.exceptions.ParsingException;
 
 public class CallbackParser {
 
 	private List<Callback> callbacks = new ArrayList<Callback>();
+	private Map<String,Context> contextMap = new HashMap<String,Context>();
 	
 	public CallbackParser() {
 		super();
@@ -50,7 +57,30 @@ public class CallbackParser {
 		return this.callbacks.removeAll(callbacks);
 	}
 
-	public void parse(String raw) {
+	public void parse(String raw) throws ParsingException {
+		parse(raw, null);
+	}
+	
+	public void parse(String raw, Context context) {
 		
+		//TODO parse input, create packet
+		Packet packet = new Packet();
+		
+		doCallbacks(packet, context);
+			
+	}
+	
+	private void doCallbacks(Packet packet, Context context) {
+		for (Callback callback : callbacks) {
+			callback.parsed(packet, context);
+		}
+	}
+	
+	public void addContext(Context context) {
+		this.contextMap.put(context.getName(), context);
+	}
+	
+	public void removeContext(String name) {
+		this.contextMap.remove(name);
 	}
 }

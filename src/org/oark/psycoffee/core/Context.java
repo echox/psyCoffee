@@ -13,13 +13,26 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-package org.oark.psycoffee.parser;
+package org.oark.psycoffee.core;
 
-import org.oark.psycoffee.core.Context;
-import org.oark.psycoffee.core.Packet;
+public class Context {
 
-public interface Callback {
-
-	public void parsed(Packet packet, Context context);
+	private String name;
+	private VarCollection vars = new VarCollection();
 	
+	public Context(String name) {
+		this.name = name;
+	}
+	
+	public VarCollection getVars() {
+		return this.vars;
+	}
+	
+	public void setVars(VarCollection vars) {
+		this.vars = vars;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
 }
