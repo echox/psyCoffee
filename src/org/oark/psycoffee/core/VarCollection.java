@@ -50,7 +50,7 @@ public class VarCollection {
 	 * @param name
 	 * @param value
 	 */
-	public void addVar(String name, String content, String operator) {
+	public synchronized void addVar(String name, String content, String operator) {
 		
 		VarValue value = new VarValue(content, operator);
 		
@@ -76,11 +76,11 @@ public class VarCollection {
 
 	}
 	
-	public VarValue getVarValue(String name) {
+	public synchronized VarValue getVarValue(String name) {
 		return this.vars.get(name);
 	}
 	
-	public List<VarValue> getVarValues(String name) {
+	public synchronized List<VarValue> getVarValues(String name) {
 		List<VarValue> list;
 		if (this.listVars.containsKey(name)) {
 			list = this.listVars.get(name);
@@ -94,11 +94,11 @@ public class VarCollection {
 		return list;
 	}
 	
-	public void addVar(String name, String content) {
+	public synchronized void addVar(String name, String content) {
 		addVar(name, content, Operators.CURRENT);
 	}
 	
-	public void setVar(String name, String content, String operator) {
+	public synchronized void setVar(String name, String content, String operator) {
 		if (content == null) {
 			removeVar(name);
 		} else {
@@ -107,22 +107,22 @@ public class VarCollection {
 		}
 	}
 	
-	public void setVar(String name, String content) {
+	public synchronized void setVar(String name, String content) {
 		setVar(name, content, Operators.CURRENT);
 	}
 	
-	public void setList(String name, List<String> list, String operator) {
+	public synchronized void setList(String name, List<String> list, String operator) {
 		
 		List<VarValue> varList = VarHelper.getVarList(list, operator);
 
 		this.listVars.put(getListKey(name), varList);
 	}
 	
-	public void setList(String name, List<String> list) {
+	public synchronized void setList(String name, List<String> list) {
 		setList(name, list, Operators.CURRENT);
 	}
 	
-	public void addList(String name, List<String> list, String operator) {
+	public synchronized void addList(String name, List<String> list, String operator) {
 		
 		if (!name.startsWith(LIST_PREFIX)) {
 			name = getListKey(name);
@@ -137,11 +137,11 @@ public class VarCollection {
 		}
 	}
 	
-	public void addList(String name, List<String> list) {
+	public synchronized void addList(String name, List<String> list) {
 		addList(name, list, Operators.CURRENT);
 	}
 	
-	public void removeVar(String name) {
+	public synchronized void removeVar(String name) {
 		if (isListKey(name)) {
 			this.listVars.remove(name);
 		} else {
@@ -159,7 +159,7 @@ public class VarCollection {
 	 * @param value
 	 * @return false if the value wasn't found.
 	 */
-	public boolean removeValue(String name, String content) {
+	public synchronized boolean removeValue(String name, String content) {
 		
 		boolean removed = false;
 		
@@ -182,7 +182,7 @@ public class VarCollection {
 	}
 	
 	@Override
-	public String toString() {
+	public synchronized String toString() {
 		StringBuilder vars = new StringBuilder();
 		for (Entry<String, VarValue> var : this.vars.entrySet()) {
 			VarValue value = var.getValue();
