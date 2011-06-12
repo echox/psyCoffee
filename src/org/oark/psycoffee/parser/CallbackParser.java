@@ -91,6 +91,13 @@ public class CallbackParser {
 					String name = lineParts[0].substring(1);
 					String value = lineParts[1];
 					
+					if(operator.equals(Operators.PERSIST)) {
+						if (context == null) {
+							packet.setInvalid(true);
+						} else {
+							//TODO modify context
+						}
+					}
 					vars.addVar(name,value,operator);
 					
 				} else {
