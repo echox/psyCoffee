@@ -19,7 +19,16 @@ public class Packet {
 
 	private VarCollection routingHeader = new VarCollection();
 	private Entity entity = new Entity();
+	private boolean invalid;
 	
+	public boolean isInvalid() {
+		return invalid;
+	}
+
+	public void setInvalid(boolean invalid) {
+		this.invalid = invalid;
+	}
+
 	public VarCollection getRoutingHeader() {
 		return this.routingHeader;
 	}
