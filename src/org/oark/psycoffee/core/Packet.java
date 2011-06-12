@@ -17,10 +17,46 @@ package org.oark.psycoffee.core;
 
 public class Packet {
 
-	private VarCollection routingHeader = new VarCollection();
-	private Entity entity = new Entity();
-	private boolean invalid;
+	private VarCollection routingVars = new VarCollection();
+	private VarCollection entityVars = new VarCollection();
+	private String method = new String();
+	private String payload = new String();
 	
+	//flag for invalid packetparts or incomplete parsing
+	private boolean invalid;
+
+	public VarCollection getRoutingVars() {
+		return routingVars;
+	}
+
+	public void setRoutingVars(VarCollection routingVars) {
+		this.routingVars = routingVars;
+	}
+
+	public VarCollection getEntityVars() {
+		return entityVars;
+	}
+
+	public void setEntityVars(VarCollection entityVars) {
+		this.entityVars = entityVars;
+	}
+
+	public String getMethod() {
+		return method;
+	}
+
+	public void setMethod(String method) {
+		this.method = method;
+	}
+
+	public String getPayload() {
+		return payload;
+	}
+
+	public void setPayload(String payload) {
+		this.payload = payload;
+	}
+
 	public boolean isInvalid() {
 		return invalid;
 	}
@@ -29,30 +65,16 @@ public class Packet {
 		this.invalid = invalid;
 	}
 
-	public VarCollection getRoutingHeader() {
-		return this.routingHeader;
-	}
-	
-	public void setRoutingHeader(VarCollection header) {
-		this.routingHeader = header;
-	}
-
-	public Entity getEntity() {
-		return entity;
-	}
-
-	public void setEntity(Entity entity) {
-		this.entity = entity;
-	}
-
 	@Override
 	//TODO escape |, use content length
 	public String toString() {
 		StringBuilder packet = new StringBuilder();
 		packet.append("|\n");
-		packet.append(routingHeader.toString());
+		packet.append(routingVars.toString());
 		packet.append("\n");
-		packet.append(entity.toString());
+		packet.append(entityVars.toString());
+		packet.append(method + "\n");
+		packet.append(payload);
 		packet.append("|");
 		return packet.toString();
 	}
