@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.oark.psycoffee.core.Context;
 import org.oark.psycoffee.core.Packet;
@@ -97,7 +98,7 @@ public class CallbackParser {
 					//TODO add parsing of length
 					if("".equals(line) && gotMethod == false) {
 						vars = packet.getEntityVars();
-					} else if ("_".equals(first) && gotMethod == false) {
+					} else if (isMethod(line) && gotMethod == false) {
 						//TODO check method format
 						packet.setMethod(line);
 						gotMethod = true;
@@ -139,6 +140,14 @@ public class CallbackParser {
 			}
 		}
 		return false;
+	}
+	
+	private boolean isMethod(String method) {
+		
+		//TODO should be a little more efficient ;-)
+		
+		 Pattern p = Pattern.compile(".[a-zA-Z_]*");
+		 return p.matcher(method).matches();
 	}
 
 	private void doCallbacks(Packet packet, Context context) {
