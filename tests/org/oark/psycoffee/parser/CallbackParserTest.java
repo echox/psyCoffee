@@ -22,8 +22,7 @@ import org.oark.psycoffee.core.Packet;
 
 public class CallbackParserTest {
 
-	public static String example = "|\n" 
-		   + ":_source\tpsyc://example.symlynX.com/~fippo\n"
+	public static String example = ":_source\tpsyc://example.symlynX.com/~fippo\n"
 		   + ":_target\tpsyc://ente.aquarium.example.org:-32872\n"
 		   + "\n"
 		   + ":_nick\tfippo\n"
@@ -32,8 +31,6 @@ public class CallbackParserTest {
 		   + "\n"
 		   + "more text\n"
 		   + "|\n" 
-		   + "######TRASH\n" 
-		   +"|\n" 
 		   + ":_source\tpsyc://example.symlynX.com/~fippo\n" 
 		   + ":_target\tpsyc://ente.aquarium.example.org:-32872\n" 
 		   + "\n" 
@@ -44,8 +41,7 @@ public class CallbackParserTest {
 		   + "more text\n"
 		   + "|";
 	
-	public static String onePacket = "|\n" 
-		   + ":_source\tpsyc://example.symlynX.com/~fippo\n" 
+	public static String onePacket = ":_source\tpsyc://example.symlynX.com/~fippo\n" 
 		   + ":_target\tpsyc://ente.aquarium.example.org:-32872\n" 
 		   + "\n" 
 		   + ":_nick\tfippo\n" 

@@ -24,8 +24,7 @@ public class PacketTest {
 	@Test
 	public void testToString() {
 		
-		String example = "|\n" 
-		   + ":_source\tpsyc://example.symlynX.com/~fippo\n"
+		String example = ":_source\tpsyc://example.symlynX.com/~fippo\n"
 		   + ":_target\tpsyc://ente.aquarium.example.org:-32872\n"
 		   + "\n"
 		   + ":_nick\tfippo\n"

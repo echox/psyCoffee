@@ -69,7 +69,6 @@ public class Packet {
 	//TODO escape |, use content length
 	public String toString() {
 		StringBuilder packet = new StringBuilder();
-		packet.append("|\n");
 		packet.append(routingVars.toString());
 		packet.append("\n");
 		packet.append(entityVars.toString());
