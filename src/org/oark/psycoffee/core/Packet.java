@@ -74,7 +74,7 @@ public class Packet {
 		packet.append(entityVars.toString());
 		packet.append(method + "\n");
 		packet.append(payload);
-		packet.append("|");
+		packet.append("|\n");
 		return packet.toString();
 	}
 	

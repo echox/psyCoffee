@@ -39,7 +39,7 @@ public class CallbackParserTest {
 		   + "Hello [_nick].\n"
 		   + "\n"
 		   + "more text\n"
-		   + "|";
+		   + "|\n";
 	
 	public static String onePacket = ":_source\tpsyc://example.symlynX.com/~fippo\n" 
 		   + ":_target\tpsyc://ente.aquarium.example.org:-32872\n" 
@@ -49,7 +49,7 @@ public class CallbackParserTest {
 		   + "Hello [_nick].\n"
 		   + "\n"
 		   + "more text\n"
-		   + "|";
+		   + "|\n";
 	
 	public class cb implements Callback {
 

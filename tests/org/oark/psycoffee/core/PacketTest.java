@@ -30,7 +30,7 @@ public class PacketTest {
 		   + ":_nick\tfippo\n"
 		   + "_info_nickname\n"
 		   + "Hello [_nick].\n"
-		   + "|";
+		   + "|\n";
 		
 		Packet packet = new Packet();
 		packet.setPayload("Hello [_nick].\n");
