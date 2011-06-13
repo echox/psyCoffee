@@ -149,6 +149,13 @@ public class VarCollection {
 		}
 	}
 	
+	public synchronized boolean isEmpty() {		
+		if (vars.isEmpty() && listVars.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * removes a value from a list variable
 	 * if the list is empty, it will also be removed
