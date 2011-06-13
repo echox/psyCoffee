@@ -23,9 +23,9 @@ import org.oark.psycoffee.core.Packet;
 
 public class QueueParser extends Parser {
 
-	Queue <ParsingResult> results = new ConcurrentLinkedQueue();
+	Queue <ParsingResult> results = new ConcurrentLinkedQueue<ParsingResult>();
 	
-	private class ParsingResult {
+	public class ParsingResult {
 		public ParsingResult(Packet packet, Context context) {
 			this.packet = packet;
 			this.context = context;
