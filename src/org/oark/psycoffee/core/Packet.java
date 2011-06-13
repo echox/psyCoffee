@@ -19,8 +19,8 @@ public class Packet {
 
 	private VarCollection routingVars = new VarCollection();
 	private VarCollection entityVars = new VarCollection();
-	private String method = new String();
-	private String payload = new String();
+	private String method = null;
+	private String payload = null;
 	
 	//flag for invalid packetparts or incomplete parsing
 	private boolean invalid;
@@ -72,8 +72,12 @@ public class Packet {
 		packet.append(routingVars.toString());
 		packet.append("\n");
 		packet.append(entityVars.toString());
-		packet.append(method + "\n");
-		packet.append(payload);
+		if (! ("".equals(method) || method == null)) { 
+			packet.append(method + "\n");
+		}
+		if (! ("".equals(payload) || payload == null)) { 
+			packet.append(payload);
+		}
 		packet.append("|\n");
 		return packet.toString();
 	}

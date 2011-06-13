@@ -15,6 +15,8 @@
  */
 package org.oark.psycoffee.parser;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -40,6 +42,20 @@ public class RawpacketsTest {
 		
 	}
 	
+	@Test
+	public void testEmptyPacket() {
+	
+		parser.parse("|");
+		
+		assertEquals(1,parser.getQueue().size());
+		
+		Packet packet = parser.getQueue().poll().packet;
+		assertTrue(packet.getRoutingVars().isEmpty());
+		assertTrue(packet.getEntityVars().isEmpty());
+		assertTrue(packet.getPayload() == null);
+		assertTrue(packet.getMethod() == null);
+		
+	}
 	
 	private void testParsingOfPacket(File file) throws IOException {
 		FileInputStream fis = null;
@@ -56,7 +72,7 @@ public class RawpacketsTest {
 	      while (dis.available() != 0) {
 	    	  raw.append((char) dis.read());
 	      }
-	      
+	      System.out.println(file.getName() + " parsing...");
 	      parser.parse(raw.toString());
 	      Packet packet = new Packet();
 	      boolean match = false;
@@ -91,7 +107,7 @@ public class RawpacketsTest {
 
 	
 	
-	@Test
+	
 	public void parsePackets() throws IOException {
 
 		

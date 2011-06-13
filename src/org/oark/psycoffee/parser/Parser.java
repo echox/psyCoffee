@@ -89,6 +89,10 @@ public abstract class Parser {
 						} else {
 							payload.append(line+"\n");
 						}
+					} else {
+						if("|".equals(line)) {
+							dispatch(packet, context);
+						}
 					}
 				}
 		}
@@ -101,7 +105,7 @@ public abstract class Parser {
 		
 		//TODO should be a little more efficient ;-)
 		
-		 Pattern p = Pattern.compile(".[a-zA-Z_]*");
+		 Pattern p = Pattern.compile(".[a-zA-Z_]+");
 		 return p.matcher(method).matches();
 	}
 	
