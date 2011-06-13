@@ -19,14 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.oark.psycoffee.core.Context;
 import org.oark.psycoffee.core.Packet;
-import org.oark.psycoffee.core.VarCollection;
-import org.oark.psycoffee.core.constants.Operators;
 
-public class CallbackParser {
+public class CallbackParser extends Parser {
 
 	private List<Callback> callbacks = new ArrayList<Callback>();
 	private Map<String,Context> contextMap = new HashMap<String,Context>();
@@ -43,6 +40,12 @@ public class CallbackParser {
 		addCallbacks(callbacks);
 	}
 	
+	protected void dispatch(Packet packet, Context context) {
+		for (Callback callback : callbacks) {
+			callback.parsed(packet, context);
+		}
+	}
+	
 	public void addCallback(Callback callback) {
 		this.callbacks.add(callback);
 	}
@@ -57,100 +60,6 @@ public class CallbackParser {
 	
 	public boolean removeCallbacks(List<Callback> callbacks) {
 		return this.callbacks.removeAll(callbacks);
-	}
-
-	public void parse(String raw) {
-		parse(raw, null);
-	}
-	
-	public void parse(String raw, Context context) {
-		
-		//TODO cleanup this mess! :-)
-		
-		//TODO replace with a more efficient method
-		String[] lines = raw.split("\n");
-		
-		boolean gotMethod = false;
-		Packet packet = new Packet();
-		VarCollection vars = packet.getRoutingVars();
-		StringBuffer payload = new StringBuffer();
-		for (int i = 0; i < lines.length; i++) {
-			String line = lines[i];
-
-				String first = "";
-				if(!"".equals(line)) {
-					first = line.substring(0,1);
-				}
-				if (isOperator(first)) {
-					
-					String lineParts[] = line.split("\t");
-					String operator = lineParts[0].substring(0,1) ;
-					String name = lineParts[0].substring(1);
-					String value = lineParts[1];
-					
-					if(operator.equals(Operators.PERSIST)) {
-						if (context == null) {
-							packet.setInvalid(true);
-						} else {
-							//TODO modify context
-						}
-					}
-					vars.addVar(name,value,operator);
-					
-				} else {
-					
-					//TODO add parsing of length
-					if("".equals(line) && gotMethod == false) {
-						vars = packet.getEntityVars();
-					} else if (isMethod(line) && gotMethod == false) {
-						//TODO check method format
-						packet.setMethod(line);
-						gotMethod = true;
-					} else if (gotMethod == true) {
-						if ("|".equals(line)) {
-							
-							//finish packet and do callbacks
-							packet.setPayload(payload.toString());
-							doCallbacks(packet, context);
-							
-							//reset
-							gotMethod = false;
-							packet = new Packet();
-							vars = packet.getRoutingVars();
-							payload = new StringBuffer();
-						} else {
-							payload.append(line+"\n");
-						}
-					}
-				}
-		}
-		
-	}
-	
-	private boolean isOperator(String operator) {
-
-		//TODO should be a little more efficient ;-)
-		
-		for(int i=0; i < Operators.ALL_OPERATORS.length; i++) {
-			if(Operators.ALL_OPERATORS[i].equals(operator)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean isMethod(String method) {
-		
-		//TODO should be a little more efficient ;-)
-		
-		 Pattern p = Pattern.compile(".[a-zA-Z_]*");
-		 return p.matcher(method).matches();
-	}
-
-	private void doCallbacks(Packet packet, Context context) {
-		for (Callback callback : callbacks) {
-			callback.parsed(packet, context);
-		}
 	}
 	
 	public void addContext(Context context) {
