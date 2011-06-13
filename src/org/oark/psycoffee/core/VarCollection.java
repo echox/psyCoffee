@@ -189,7 +189,7 @@ public class VarCollection {
 			vars.append(value.getOperator() + var.getKey() + "\t" + value.getValue() + "\n");
 		}
 		for (Entry<String, List<VarValue>> listVar : this.listVars.entrySet()) {
-			vars.append(listVar.getValue().get(0).getOperator() + listVar.getKey() + " ");
+			vars.append(listVar.getValue().get(0).getOperator() + listVar.getKey() + "\t");
 			List<VarValue> list = listVar.getValue();
 			vars.append(list.get(0).getValue());
 			for(int i=1; i < list.size(); i++) {
