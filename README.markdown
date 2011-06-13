@@ -10,3 +10,5 @@ More Information on PSYC resides at http://www.psyc.eu.
 If you are looking for an efficient parser and clean implementation, use http://lib.psyc.eu
 
 License: ISC (equivalent to 2-clause BSD license)
+
+*Info:* The content of doc/rawpackets/ is taken from the libpsyc project (source: libpsyc/test/packets/*)
