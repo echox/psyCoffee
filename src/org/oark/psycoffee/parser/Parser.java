@@ -48,9 +48,13 @@ public abstract class Parser {
 				if (isOperator(first)) {
 					
 					String lineParts[] = line.split("\t");
+					
 					String operator = lineParts[0].substring(0,1) ;
-					String name = lineParts[0].substring(1);
-					String value = lineParts[1];
+					String name = lineParts[0].substring(1);		
+					String value = null;
+					if(lineParts.length == 2) {
+						value = lineParts[1];
+					}
 					
 					if(operator.equals(Operators.PERSIST)) {
 						if (context == null) {
