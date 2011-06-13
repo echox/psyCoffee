@@ -101,15 +101,15 @@ public abstract class Parser {
 	
 	abstract protected void dispatch(Packet packet, Context context);
 	
-	private static boolean isMethod(String method) {
+	protected static boolean isMethod(String method) {
 		
 		//TODO should be a little more efficient ;-)
 		
-		 Pattern p = Pattern.compile(".[a-zA-Z_]+");
+		 Pattern p = Pattern.compile("[a-zA-Z_]+");
 		 return p.matcher(method).matches();
 	}
 	
-	private static boolean isOperator(String operator) {
+	protected static boolean isOperator(String operator) {
 
 		//TODO should be a little more efficient ;-)
 		
