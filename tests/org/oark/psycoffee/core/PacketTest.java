@@ -40,7 +40,7 @@ public class PacketTest {
 		packet.getRoutingVars().setVar("_target", "psyc://ente.aquarium.example.org:-32872");
 		
 		assertEquals(example, packet.toString());
-		System.out.println(packet);
+//		System.out.println(packet);
 	}
 
 }
