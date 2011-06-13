@@ -51,7 +51,7 @@ public abstract class Parser {
 					
 					String operator = lineParts[0].substring(0,1) ;
 					String name = lineParts[0].substring(1);		
-					String value = null;
+					String value = "";
 					if(lineParts.length == 2) {
 						value = lineParts[1];
 					}
