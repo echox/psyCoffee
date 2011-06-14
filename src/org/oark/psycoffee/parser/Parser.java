@@ -36,6 +36,8 @@ public abstract class Parser {
 		
 		boolean gotMethod = false;
 		Packet packet = new Packet();
+		packet.setPayload("");
+		packet.setMethod("");
 		VarCollection vars = packet.getRoutingVars();
 		StringBuffer payload = new StringBuffer();
 		for (int i = 0; i < lines.length; i++) {

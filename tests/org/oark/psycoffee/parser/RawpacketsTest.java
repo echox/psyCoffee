@@ -42,20 +42,143 @@ public class RawpacketsTest {
 		
 	}
 	
+	private Packet parse(String raw) {
+		parser.parse(raw);
+		assertEquals(1,parser.getQueue().size());
+		Packet packet = parser.getQueue().poll().packet;
+		return packet;
+	}
+	
 	@Test
 	public void testEmptyPacket() {
-	
-		parser.parse("|");
 		
-		assertEquals(1,parser.getQueue().size());
+		Packet packet = parse("|");
 		
-		Packet packet = parser.getQueue().poll().packet;
 		assertTrue(packet.getRoutingVars().isEmpty());
 		assertTrue(packet.getEntityVars().isEmpty());
-		assertTrue(packet.getPayload() == null);
-		assertTrue(packet.getMethod() == null);
-		
+		assertTrue(packet.getPayload().isEmpty());
+		assertTrue(packet.getMethod().isEmpty());
 	}
+	
+	@Test
+	public void testBodyOnly() {
+		
+		String raw = "\n" + 
+			"_message_private\n" +
+			"OHAI\n" +
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertTrue(packet.getRoutingVars().isEmpty());
+		assertTrue(packet.getEntityVars().isEmpty());
+		assertEquals("_message_private", packet.getMethod());
+		assertEquals("OHAI\n", packet.getPayload());
+	}
+	
+	@Test
+	public void testMethodOnly() {
+		String raw = "\n" + 
+			"_notice_foo_bar\n" +
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertTrue(packet.getRoutingVars().isEmpty());
+		assertTrue(packet.getEntityVars().isEmpty());
+		assertEquals("_notice_foo_bar",packet.getMethod());
+		assertTrue(packet.getPayload().isEmpty());
+	}
+	
+	@Test
+	public void testMethodOnly1() {
+		String raw ="\n" +
+			"_\n" +
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertTrue(packet.getRoutingVars().isEmpty());
+		assertTrue(packet.getEntityVars().isEmpty());
+		assertEquals("_",packet.getMethod());
+		assertTrue(packet.getPayload().isEmpty());
+	}
+	
+	@Test
+	public void testNoContent() {
+		
+		String raw = ":_source\tpsyc://foo.example.com/\n" +
+			":_target\tpsyc://bar.example.com/\n"+
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://foo.example.com/", packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar.example.com/", packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_target").getOperator());
+		assertTrue(packet.getEntityVars().isEmpty());
+		
+		assertTrue(packet.getMethod().isEmpty());
+		assertTrue(packet.getPayload().isEmpty());
+	}
+	
+	@Test
+	public void testNoData() {
+		String raw = ":_source\tpsyc://foo.example.com/\n" +
+				":_target\tpsyc://bar.example.com/\n" +
+				"\n" +
+				"_notice_foo_bar\n" +
+				"|\n";
+
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://foo.example.com/", packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar.example.com/", packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_target").getOperator());
+		assertTrue(packet.getEntityVars().isEmpty());
+		
+		assertTrue(packet.getMethod().equals("_notice_foo_bar"));
+		assertTrue(packet.getPayload().isEmpty());
+	}
+	
+	@Test
+	public void testNoEntity() {
+		String raw =":_source\tpsyc://foo.example.com/\n" +
+		":_target\tpsyc://bar.example.com/\n" +
+		"\n" +
+		"_message_private\n" +
+		"OHAI\n" +
+		"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://foo.example.com/", packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar.example.com/", packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_target").getOperator());
+		assertTrue(packet.getEntityVars().isEmpty());
+		
+		assertTrue(packet.getMethod().equals("_message_private"));
+		assertTrue(packet.getPayload().equals("OHAI\n"));
+	}
+	
+	@Test
+	public void testNoRouting() {
+		String raw = "\n" +
+		":_foo\tbar\n" +
+		"_notice_foo_bar\n" + 
+		"|\n";
+
+		Packet packet = parse(raw);
+		
+		assertTrue(packet.getRoutingVars().isEmpty());
+		assertEquals("bar", packet.getEntityVars().getVarValue("_foo").getValue());
+		assertEquals("_notice_foo_bar",packet.getMethod());
+		assertTrue(packet.getPayload().isEmpty());
+	}
+	
 	
 	private void testParsingOfPacket(File file) throws IOException {
 		FileInputStream fis = null;
