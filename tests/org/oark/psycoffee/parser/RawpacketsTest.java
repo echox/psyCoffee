@@ -179,6 +179,71 @@ public class RawpacketsTest {
 		assertTrue(packet.getPayload().isEmpty());
 	}
 	
+	@Test
+	public void testNoValue() {
+		String raw =":_source\tpsyc://foo.example.com/\n" +
+		":_target\tpsyc://bar.example.com/\n" +
+		"\n" +
+		":_foo\t\n" +
+		"_message_private\n" +
+		"OHAI\n" +
+		"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://foo.example.com/", packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar.example.com/", packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_target").getOperator());
+		assertFalse(packet.getEntityVars().isEmpty());
+		assertEquals(":",packet.getEntityVars().getVarValue("_foo").getOperator());
+		assertEquals("", packet.getEntityVars().getVarValue("_foo").getValue());
+		
+		assertTrue(packet.getMethod().equals("_message_private"));
+		assertTrue(packet.getPayload().equals("OHAI\n"));
+		
+		raw =":_source\tpsyc://foo.example.com/\n" +
+		":_target\tpsyc://bar.example.com/\n" +
+		"\n" +
+		":_foo\n" +
+		"_message_private\n" +
+		"OHAI\n" +
+		"|\n";
+		
+		packet = parse(raw);
+		
+		assertEquals("psyc://foo.example.com/", packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar.example.com/", packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_target").getOperator());
+		assertFalse(packet.getEntityVars().isEmpty());
+		assertEquals(":",packet.getEntityVars().getVarValue("_foo").getOperator());
+		assertEquals("", packet.getEntityVars().getVarValue("_foo").getValue());
+		
+		assertTrue(packet.getMethod().equals("_message_private"));
+		assertTrue(packet.getPayload().equals("OHAI\n"));
+	}
+	
+	@Test
+	public void testContextEnter() {
+		String raw = ":_target\tpsyc://p5B084547.dip.t-dialin.net/@test\n" +
+			":_source\tsomething"+
+			"\n" +
+			"_request_context_enter\n" +
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://p5B084547.dip.t-dialin.net/@test", packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_target").getOperator());
+		assertEquals("something", packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertTrue(packet.getEntityVars().isEmpty());
+		
+		assertTrue(packet.getMethod().equals("_request_context_enter"));
+		assertTrue(packet.getPayload().isEmpty());
+	}
+	
 	
 	private void testParsingOfPacket(File file) throws IOException {
 		FileInputStream fis = null;
