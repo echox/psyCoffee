@@ -23,10 +23,12 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.oark.psycoffee.core.Packet;
+import org.oark.psycoffee.core.VarValue;
 
 //TODO rewrite this into a real junit test ;-)
 
@@ -244,6 +246,143 @@ public class RawpacketsTest {
 		assertTrue(packet.getPayload().isEmpty());
 	}
 	
+	@Test
+	public void testLength() {
+		String raw = ":_source\tpsyc://foo/~bar\n" +
+			":_target\tpsyc://bar/~baz\n"+
+			":_tag\tsch1828hu3r2cm\n"+
+			"86\n"+
+			":_foo\tbar baz\n"+
+			":_abc_def 11\tfoo bar\n"+
+			"baz\n"+
+			":_foo_bar\tyay\n"+
+			"_message_foo_bar\n"+
+			"ohai there!\n"+
+			"\\o/\n"+
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://foo/~bar",packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar/~baz",packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_target").getOperator());
+		assertEquals("sch1828hu3r2cm",packet.getRoutingVars().getVarValue("_tag").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_tag").getOperator());
+		assertEquals(86, packet.getEntityLength());
+		
+		assertEquals("bar baz",packet.getRoutingVars().getVarValue("_foo").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_foo").getOperator());
+		assertEquals("foo bar\nbaz",packet.getRoutingVars().getVarValue("_abc_def").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_abc_def").getOperator());
+		//TODO include length for vars and add assert here
+		
+		assertEquals("yay",packet.getRoutingVars().getVarValue("_foo_bar").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_foo_bar").getOperator());
+	}
+	
+	@Test
+	public void testOnlyVarLength() {
+		String raw = ":_source\tpsyc://foo/~bar\n" +
+			":_target\tpsyc://bar/~baz\n"+
+			":_tag\tsch1828hu3r2cm\n"+
+			"\n"+
+			":_foo\tbar baz\n"+
+			":_abc_def 11\tfoo bar\n"+
+			"baz\n"+
+			":_foo_bar\tyay\n"+
+			"_message_foo_bar\n"+
+			"ohai there!\n"+
+			"\\o/\n"+
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://foo/~bar",packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar/~baz",packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_target").getOperator());
+		assertEquals("sch1828hu3r2cm",packet.getRoutingVars().getVarValue("_tag").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_tag").getOperator());
+
+		assertEquals("bar baz",packet.getRoutingVars().getVarValue("_foo").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_foo").getOperator());
+		assertEquals("foo bar\nbaz",packet.getRoutingVars().getVarValue("_abc_def").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_abc_def").getOperator());
+		//TODO include length for vars and add assert here
+		
+		assertEquals("yay",packet.getRoutingVars().getVarValue("_foo_bar").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_foo_bar").getOperator());
+	}
+	
+	@Test
+	public void testUTF8() {
+		String raw = ":_source\tpsyc://foo/~bar\n" +
+			":_target\tpsyc://bar/~baz\n"+
+			":_tag\tsch1828hu3r2cm\n"+
+			"\n"+
+			":_foo\tbar baz\n"+
+			":_abc_def 15\tfóö bär\n"+
+			"báz\n"+
+			":_foo_bar\tyay\n"+
+			"_message_foo_bar\n"+
+			"ohai there!\n"+
+			"\\o/\n"+
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://foo/~bar",packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar/~baz",packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_target").getOperator());
+		assertEquals("sch1828hu3r2cm",packet.getRoutingVars().getVarValue("_tag").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_tag").getOperator());
+		
+		assertEquals("bar baz",packet.getRoutingVars().getVarValue("_foo").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_foo").getOperator());
+		assertEquals("fóö bär\nbáz",packet.getRoutingVars().getVarValue("_abc_def").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_abc_def").getOperator());
+		//TODO include length for vars and add assert here
+		
+		assertEquals("yay",packet.getRoutingVars().getVarValue("_foo_bar").getValue());
+		assertEquals(":",packet.getRoutingVars().getVarValue("_foo_bar").getOperator());
+	}
+	
+	@Test
+	public void testCircuit() {
+		String raw = ":_list_understand_modules\t|_state|_fragments|_context" +
+			"\n" +
+			"_request_features\n" +
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		List<VarValue> modules = packet.getRoutingVars().getVarValues("_list_understand_modules");
+		assertEquals(":",packet.getRoutingVars().getVarValue("_list_understand_modules").getOperator());
+		
+		boolean state = false;
+		boolean fragments = false;
+		boolean context = false;
+		
+		for (VarValue varValue : modules) {
+			if ("_state".equals(varValue.getValue())) {
+				state = true;
+			} else if("_fragments".equals(varValue.getValue())) {
+				fragments = true;
+			} else if("_context".equals(varValue.getValue())) {
+				context = true;
+			}
+		}
+		
+		assertTrue(state);
+		assertTrue(fragments);
+		assertTrue(context);
+		
+		assertEquals("_request_features", packet.getPayload());
+		assertTrue(packet.getEntityVars().isEmpty());
+		assertTrue(packet.getPayload().isEmpty());
+	}
 	
 	private void testParsingOfPacket(File file) throws IOException {
 		FileInputStream fis = null;
