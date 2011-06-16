@@ -11,3 +11,4 @@ Minor tasks will be scattered over the code with a //TODO prefix
 * rewrite tests to really match packet content and not only the rendered packet
 * add size to VarCollection (maybe list interface)
 * create packet rendering with/without entitylength
+* refactor value list access
