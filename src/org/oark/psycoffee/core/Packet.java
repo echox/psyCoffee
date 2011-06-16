@@ -21,8 +21,9 @@ public class Packet {
 	private VarCollection entityVars = new VarCollection();
 	private String method = null;
 	private String payload = null;
+	private long entityLength = 0;
 	
-	//flag for invalid packetparts or incomplete parsing
+	//flag for invalid parts or incomplete parsing
 	private boolean invalid;
 
 	public VarCollection getRoutingVars() {
@@ -65,22 +66,43 @@ public class Packet {
 		this.invalid = invalid;
 	}
 
+	public long getEntityLength() {
+		return entityLength;
+	}
+
+	public void setEntityLength(long entityLength) {
+		this.entityLength = entityLength;
+	}
+	
 	@Override
 	//TODO escape |, use content length
 	public String toString() {
+		
+		//routing
 		StringBuilder packet = new StringBuilder();
 		packet.append(routingVars.toString());
-		packet.append("\n");
+		
+		//length
+		if(entityLength == 0) {
+			packet.append("\n");
+		} else {
+			packet.append(entityLength);
+		}
+		
+		//entity vars
 		packet.append(entityVars.toString());
 		if (! ("".equals(method) || method == null)) { 
 			packet.append(method + "\n");
 		}
+		
+		//payload
 		if (! ("".equals(payload) || payload == null)) { 
 			packet.append(payload);
 		}
+		
+		//closing
 		packet.append("|\n");
+		
 		return packet.toString();
 	}
-	
-	
 }
