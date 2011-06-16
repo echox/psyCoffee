@@ -271,14 +271,15 @@ public class RawpacketsTest {
 		assertEquals(":",packet.getRoutingVars().getVarValue("_tag").getOperator());
 		assertEquals(86, packet.getEntityLength());
 		
-		assertEquals("bar baz",packet.getRoutingVars().getVarValue("_foo").getValue());
-		assertEquals(":",packet.getRoutingVars().getVarValue("_foo").getOperator());
-		assertEquals("foo bar\nbaz",packet.getRoutingVars().getVarValue("_abc_def").getValue());
-		assertEquals(":",packet.getRoutingVars().getVarValue("_abc_def").getOperator());
+		assertEquals("bar baz",packet.getEntityVars().getVarValue("_foo").getValue());
+		assertEquals(":",packet.getEntityVars().getVarValue("_foo").getOperator());
+		assertEquals("foo bar\nbaz",packet.getEntityVars().getVarValue("_abc_def").getValue());
+		assertEquals(":",packet.getEntityVars().getVarValue("_abc_def").getOperator());
 		//TODO include length for vars and add assert here
 		
-		assertEquals("yay",packet.getRoutingVars().getVarValue("_foo_bar").getValue());
-		assertEquals(":",packet.getRoutingVars().getVarValue("_foo_bar").getOperator());
+		assertEquals("ohai there!\n\\o/\n", packet.getPayload());
+	
+		
 	}
 	
 	@Test
@@ -305,14 +306,13 @@ public class RawpacketsTest {
 		assertEquals("sch1828hu3r2cm",packet.getRoutingVars().getVarValue("_tag").getValue());
 		assertEquals(":",packet.getRoutingVars().getVarValue("_tag").getOperator());
 
-		assertEquals("bar baz",packet.getRoutingVars().getVarValue("_foo").getValue());
-		assertEquals(":",packet.getRoutingVars().getVarValue("_foo").getOperator());
-		assertEquals("foo bar\nbaz",packet.getRoutingVars().getVarValue("_abc_def").getValue());
-		assertEquals(":",packet.getRoutingVars().getVarValue("_abc_def").getOperator());
+		assertEquals("bar baz",packet.getEntityVars().getVarValue("_foo").getValue());
+		assertEquals(":",packet.getEntityVars().getVarValue("_foo").getOperator());
+		assertEquals("foo bar\nbaz",packet.getEntityVars().getVarValue("_abc_def").getValue());
+		assertEquals(":",packet.getEntityVars().getVarValue("_abc_def").getOperator());
 		//TODO include length for vars and add assert here
 		
-		assertEquals("yay",packet.getRoutingVars().getVarValue("_foo_bar").getValue());
-		assertEquals(":",packet.getRoutingVars().getVarValue("_foo_bar").getOperator());
+		assertEquals("ohai there!\n\\o/\n", packet.getPayload());
 	}
 	
 	@Test
@@ -339,14 +339,13 @@ public class RawpacketsTest {
 		assertEquals("sch1828hu3r2cm",packet.getRoutingVars().getVarValue("_tag").getValue());
 		assertEquals(":",packet.getRoutingVars().getVarValue("_tag").getOperator());
 		
-		assertEquals("bar baz",packet.getRoutingVars().getVarValue("_foo").getValue());
-		assertEquals(":",packet.getRoutingVars().getVarValue("_foo").getOperator());
-		assertEquals("fóö bär\nbáz",packet.getRoutingVars().getVarValue("_abc_def").getValue());
-		assertEquals(":",packet.getRoutingVars().getVarValue("_abc_def").getOperator());
+		assertEquals("bar baz",packet.getEntityVars().getVarValue("_foo").getValue());
+		assertEquals(":",packet.getEntityVars().getVarValue("_foo").getOperator());
+		assertEquals("fóö bär\nbáz",packet.getEntityVars().getVarValue("_abc_def").getValue());
+		assertEquals(":",packet.getEntityVars().getVarValue("_abc_def").getOperator());
 		//TODO include length for vars and add assert here
 		
-		assertEquals("yay",packet.getRoutingVars().getVarValue("_foo_bar").getValue());
-		assertEquals(":",packet.getRoutingVars().getVarValue("_foo_bar").getOperator());
+		assertEquals("ohai there!\n\\o/\n", packet.getPayload());
 	}
 	
 	@Test
