@@ -350,7 +350,7 @@ public class RawpacketsTest {
 	
 	@Test
 	public void testCircuit() {
-		String raw = ":_list_understand_modules\t|_state|_fragments|_context" +
+		String raw = ":_list_understand_modules\t|_state|_fragments|_context\n" +
 			"\n" +
 			"_request_features\n" +
 			"|\n";
