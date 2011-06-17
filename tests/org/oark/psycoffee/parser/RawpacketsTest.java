@@ -358,7 +358,6 @@ public class RawpacketsTest {
 		Packet packet = parse(raw);
 		
 		List<VarValue> modules = packet.getRoutingVars().getVarValues("_list_understand_modules");
-		assertEquals(":",packet.getRoutingVars().getVarValue("_list_understand_modules").getOperator());
 		
 		boolean state = false;
 		boolean fragments = false;
