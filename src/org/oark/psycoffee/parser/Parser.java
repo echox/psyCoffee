@@ -23,8 +23,67 @@ import org.oark.psycoffee.core.VarCollection;
 import org.oark.psycoffee.core.constants.Operators;
 
 public abstract class Parser {
+	
 	public void parse(String raw) {
 		parse(raw, null);
+	}
+	
+	//TODO write junit tests
+	//TODO parse var size
+	protected void parseVar(String var, VarCollection vars) {
+		
+		String first = "";
+		if(!"".equals(var)) {
+			first = var.substring(0,1);
+		}
+		if (isOperator(first)) {
+			
+			long size = 0;
+			String lineParts[] = var.split("\t");
+			
+			String operator = lineParts[0].substring(0,1) ;
+			
+			String name = lineParts[0].substring(1);
+			String nameParts[] = name.split("\\s");
+			if(nameParts.length == 2) {
+				if (nameParts[1].matches("[0-9]*")) {
+					size = new Long(nameParts[1]);
+				} else {
+					//TODO PANIC MODE! SOMETHING BAD HAPPENED!!! BROKEN VAR!!! \o/
+				}
+				name = nameParts[0];
+			}
+			
+			String value = "";
+			if(lineParts.length == 2) {
+				value = lineParts[1];
+			}
+			
+			vars.addVar(name,value,operator);
+		}
+		
+	}
+	
+	
+	//TODO write junit tests
+	protected int parseVars(String raw[], VarCollection vars, int idx) {
+		
+		int i;
+		for (i = idx; i < raw.length; i++) {
+			String line = raw[i];
+			
+			if ("".equals(line) || line.matches("[0-9]*")) {
+				break;
+			} else if (isMethod(line)) {
+				break;
+			} else if ("|".equals(line)) {
+				break;
+			}
+			
+			parseVar(line, vars);
+			
+		}
+		return i;
 	}
 	
 	public void parse(String raw, Context context) {
@@ -40,61 +99,42 @@ public abstract class Parser {
 		packet.setMethod("");
 		VarCollection vars = packet.getRoutingVars();
 		StringBuffer payload = new StringBuffer();
+		
+		
 		for (int i = 0; i < lines.length; i++) {
-			String line = lines[i];
 
-				String first = "";
-				if(!"".equals(line)) {
-					first = line.substring(0,1);
+				if (gotMethod == false) {
+					i = parseVars(lines,vars,i);
 				}
-				if (isOperator(first)) {
+				
+				String line = lines[i];	
 					
-					String lineParts[] = line.split("\t");
-					
-					String operator = lineParts[0].substring(0,1) ;
-					String name = lineParts[0].substring(1);		
-					String value = "";
-					if(lineParts.length == 2) {
-						value = lineParts[1];
-					}
-					
-					if(operator.equals(Operators.PERSIST)) {
-						if (context == null) {
-							packet.setInvalid(true);
-						} else {
-							//TODO modify context
-						}
-					}
-					vars.addVar(name,value,operator);
-					
-				} else {
-					
-					//TODO add parsing of length
-					if("".equals(line) && gotMethod == false) {
-						vars = packet.getEntityVars();
-					} else if (isMethod(line) && gotMethod == false) {
-						//TODO check method format
-						packet.setMethod(line);
-						gotMethod = true;
-					} else if (gotMethod == true) {
-						if ("|".equals(line)) {
-							
-							//finish packet and do callbacks
-							packet.setPayload(payload.toString());
-							dispatch(packet, context);
-							
-							//reset
-							gotMethod = false;
-							packet = new Packet();
-							vars = packet.getRoutingVars();
-							payload = new StringBuffer();
-						} else {
-							payload.append(line+"\n");
-						}
+				if("".equals(line) && gotMethod == false) {
+					vars = packet.getEntityVars();
+				} else if (gotMethod == false && line.matches("[0-9]*")) {
+					//TODO add parsing of length							
+					packet.setEntityLength(new Long(line));
+				} else if (isMethod(line) && gotMethod == false) {
+					packet.setMethod(line);
+					gotMethod = true;
+				} else if (gotMethod == true) {
+					if ("|".equals(line)) {
+						
+						//finish packet and do callbacks
+						packet.setPayload(payload.toString());
+						dispatch(packet, context);
+						
+						//reset
+						gotMethod = false;
+						packet = new Packet();
+						vars = packet.getRoutingVars();
+						payload = new StringBuffer();
 					} else {
-						if("|".equals(line)) {
-							dispatch(packet, context);
-						}
+						payload.append(line+"\n");
+					}
+				} else {
+					if("|".equals(line)) {
+						dispatch(packet, context);
 					}
 				}
 		}
