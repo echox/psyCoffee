@@ -377,7 +377,7 @@ public class RawpacketsTest {
 		assertTrue(fragments);
 		assertTrue(context);
 		
-		assertEquals("_request_features", packet.getPayload());
+		assertEquals("_request_features", packet.getMethod());
 		assertTrue(packet.getEntityVars().isEmpty());
 		assertTrue(packet.getPayload().isEmpty());
 	}
