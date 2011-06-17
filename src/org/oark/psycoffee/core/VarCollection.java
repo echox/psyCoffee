@@ -57,14 +57,12 @@ public class VarCollection {
 		if (isListKey(name)) {
 			// add explicitly as list
 			List<String> list = new ArrayList<String>();
-			if(content.contains("|")) {
-				String items[] = content.split("|");
+				String items[] = content.split("\\|");
 				for (String item : items) {
-					list.add(item);
+					if (!item.isEmpty()) {
+						list.add(item);
+					}
 				}
-			} else {
-				list.add(content);
-			}
 			addList(name, list, operator);
 		} else {
 			if (vars.containsKey(name)) {
