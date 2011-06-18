@@ -55,6 +55,9 @@ public class Packet {
 	}
 
 	public void setPayload(String payload) {
+		if (payload.endsWith("\n")) {
+			payload = payload.substring(0, payload.length()-1);
+		}
 		this.payload = payload;
 	}
 
@@ -97,7 +100,7 @@ public class Packet {
 		
 		//payload
 		if (! ("".equals(payload) || payload == null)) { 
-			packet.append(payload);
+			packet.append(payload + "\n");
 		}
 		
 		//closing

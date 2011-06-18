@@ -87,7 +87,7 @@ public abstract class Parser {
 			}
 			
 			StringBuffer value = new StringBuffer();
-			if(nameParts.length == 2) {
+			if(nameParts.length == 2 && size > 0) {
 				idx = getStringByBytes(size, value, raw, idx);
 			} else {
 				if(lineParts.length == 2) {
