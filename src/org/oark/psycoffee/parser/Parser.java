@@ -128,7 +128,6 @@ public abstract class Parser {
 		
 		//TODO cleanup this mess! :-)
 		
-		//TODO replace with a more efficient method
 		String[] lines = raw.split("\n");
 		
 		boolean gotMethod = false;
@@ -150,7 +149,6 @@ public abstract class Parser {
 					
 				if(("".equals(line) || line.matches("[0-9]+")) && gotMethod == false) {
 					if (gotMethod == false && line.matches("[0-9]+")) {
-						//TODO add parsing of length							
 						packet.setEntityLength(new Long(line));
 						bytesToRead = packet.getEntityLength();
 						entityStart = lineIdx+1;
@@ -186,6 +184,7 @@ public abstract class Parser {
 						payload.append(line+"\n");
 						bytesToRead -= line.getBytes().length + 1;
 					} else if (bytesToRead <= 0) {
+						//TODO cleanup copy and paste section
 						//finish packet and do callbacks
 						packet.setPayload(payload.toString());
 						dispatch(packet, context);
