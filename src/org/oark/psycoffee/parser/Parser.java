@@ -61,7 +61,6 @@ public abstract class Parser {
 	}
 	
 	//TODO write junit tests
-	//TODO parse var size
 	protected int parseVar(String var, VarCollection vars, String raw[], int idx) {
 		
 		String first = "";
