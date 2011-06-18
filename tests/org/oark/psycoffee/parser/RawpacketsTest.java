@@ -277,9 +277,7 @@ public class RawpacketsTest {
 		assertEquals(":",packet.getEntityVars().getVarValue("_abc_def").getOperator());
 		//TODO include length for vars and add assert here
 		
-		assertEquals("ohai there!\n\\o/\n", packet.getPayload());
-	
-		
+		assertEquals("ohai there!\n\\o/", packet.getPayload());
 	}
 	
 	@Test
@@ -380,6 +378,28 @@ public class RawpacketsTest {
 		assertEquals("_request_features", packet.getMethod());
 		assertTrue(packet.getEntityVars().isEmpty());
 		assertTrue(packet.getPayload().isEmpty());
+	}
+	
+	@Test
+	public void testEscaping() {
+		String raw =":_source\tpsyc://foo.example.com/\n" +
+		":_target\tpsyc://bar.example.com/\n" +
+		"25\n" +
+		"_message_private\n" +
+		"|||\n" +
+		"|\n" +
+		"|\n" +		
+		"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://foo.example.com/", packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar.example.com/", packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_target").getOperator());
+		assertTrue(packet.getEntityVars().isEmpty());
+		assertTrue(packet.getMethod().equals("_message_private"));
+		assertTrue(packet.getPayload().equals("|||\n|\n|"));
 	}
 	
 	private void testParsingOfPacket(File file) throws IOException {
