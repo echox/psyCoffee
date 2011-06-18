@@ -29,8 +29,40 @@ public abstract class Parser {
 	}
 	
 	//TODO write junit tests
+	protected int getStringByBytes(int bytes, StringBuffer target, String raw[], int idx) {
+		
+		int bytesToRead = bytes;
+		
+		//quickhack
+		raw[idx] = raw[idx].split("\t")[1];
+		
+		int lineIdx;
+		for(lineIdx = idx; bytesToRead > 0; lineIdx++) {
+			String line = raw[lineIdx];
+			if (line.getBytes().length < bytesToRead) {
+				target.append(line+"\n");
+				bytesToRead -= line.getBytes().length+1;
+			} else if (line.getBytes().length == bytesToRead) {
+				target.append(line);
+				bytesToRead -= line.getBytes().length;
+			} else {
+				byte[] tmp;
+				tmp = line.getBytes();
+				byte[] part = new byte[bytesToRead];
+				for(int i=0;i<bytesToRead;i++) {
+					part[i] = tmp[i];
+				}
+				target.append(new String(part));
+				bytesToRead = 0;
+			}
+		}
+		
+		return lineIdx;
+	}
+	
+	//TODO write junit tests
 	//TODO parse var size
-	protected void parseVar(String var, VarCollection vars) {
+	protected int parseVar(String var, VarCollection vars, String raw[], int idx) {
 		
 		String first = "";
 		if(!"".equals(var)) {
@@ -38,7 +70,7 @@ public abstract class Parser {
 		}
 		if (isOperator(first)) {
 			
-			long size = 0;
+			int size = 0;
 			String lineParts[] = var.split("\t");
 			
 			String operator = lineParts[0].substring(0,1) ;
@@ -47,20 +79,26 @@ public abstract class Parser {
 			String nameParts[] = name.split("\\s");
 			if(nameParts.length == 2) {
 				if (nameParts[1].matches("[0-9]*")) {
-					size = new Long(nameParts[1]);
+					size = new Integer(nameParts[1]);
 				} else {
 					//TODO PANIC MODE! SOMETHING BAD HAPPENED!!! BROKEN VAR!!! \o/
 				}
 				name = nameParts[0];
 			}
 			
-			String value = "";
-			if(lineParts.length == 2) {
-				value = lineParts[1];
+			StringBuffer value = new StringBuffer();
+			if(nameParts.length == 2) {
+				idx = getStringByBytes(size, value, raw, idx);
+			} else {
+				if(lineParts.length == 2) {
+					value.append(lineParts[1]);
+				}
 			}
 			
-			vars.addVar(name,value,operator);
+			vars.addVar(name,value.toString(),operator);
 		}
+		
+		return idx;
 		
 	}
 	
@@ -80,7 +118,7 @@ public abstract class Parser {
 				break;
 			}
 			
-			parseVar(line, vars);
+			i = parseVar(line, vars,raw,i);
 			
 		}
 		return i;
