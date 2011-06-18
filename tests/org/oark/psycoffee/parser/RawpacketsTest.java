@@ -163,7 +163,7 @@ public class RawpacketsTest {
 		assertTrue(packet.getEntityVars().isEmpty());
 		
 		assertTrue(packet.getMethod().equals("_message_private"));
-		assertTrue(packet.getPayload().equals("OHAI\n"));
+		assertTrue(packet.getPayload().equals("OHAI"));
 	}
 	
 	@Test
@@ -202,7 +202,7 @@ public class RawpacketsTest {
 		assertEquals("", packet.getEntityVars().getVarValue("_foo").getValue());
 		
 		assertTrue(packet.getMethod().equals("_message_private"));
-		assertTrue(packet.getPayload().equals("OHAI\n"));
+		assertTrue(packet.getPayload().equals("OHAI"));
 		
 		raw =":_source\tpsyc://foo.example.com/\n" +
 		":_target\tpsyc://bar.example.com/\n" +
@@ -223,7 +223,7 @@ public class RawpacketsTest {
 		assertEquals("", packet.getEntityVars().getVarValue("_foo").getValue());
 		
 		assertTrue(packet.getMethod().equals("_message_private"));
-		assertTrue(packet.getPayload().equals("OHAI\n"));
+		assertTrue(packet.getPayload().equals("OHAI"));
 	}
 	
 	@Test
@@ -281,6 +281,111 @@ public class RawpacketsTest {
 	}
 	
 	@Test
+	public void testLengthBodyOnly() {
+		String raw = "22\n" +
+			"_message_private\n" +
+			"OHAI\n" +
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals(22,packet.getEntityLength());
+		assertEquals("_message_private",packet.getMethod());
+		assertEquals("OHAI",packet.getPayload());
+		assertTrue(packet.getRoutingVars().isEmpty());
+		assertTrue(packet.getEntityVars().isEmpty());
+
+	}
+	
+	@Test
+	public void testLengthNoContent() {
+		String raw =":_source\tpsyc://foo.example.com/\n" +
+			":_target\tpsyc://bar.example.com/\n" +
+			"0\n" +
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://foo.example.com/", packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar.example.com/", packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_target").getOperator());
+		
+		assertEquals(0,packet.getEntityLength());
+		assertTrue(packet.getMethod().isEmpty());
+		assertTrue(packet.getPayload().isEmpty());
+		assertTrue(packet.getEntityVars().isEmpty());
+	}
+	
+	@Test
+	public void testLengthNoData() {
+		String raw = ":_source\tpsyc://foo.example.com/\n" +
+			":_target\tpsyc://bar.example.com/\n"+
+			"16\n" +
+			"_notice_foo_bar\n" +
+			"|\n";
+		
+		Packet packet = parse(raw);
+
+		assertEquals("psyc://foo.example.com/", packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar.example.com/", packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_target").getOperator());
+		
+		assertEquals(16,packet.getEntityLength());
+		assertEquals("_notice_foo_bar",packet.getMethod());
+		assertTrue(packet.getPayload().isEmpty());
+		assertTrue(packet.getEntityVars().isEmpty());
+	}
+	
+	@Test
+	public void testLengthNoEntityVars() {
+		String raw = ":_source\tpsyc://foo.example.com/\n"+
+			":_target\tpsyc://bar.example.com/\n" +
+			"22\n"+
+			"_message_private\n"+
+			"OHAI\n"+
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://foo.example.com/", packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar.example.com/", packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_target").getOperator());
+		
+		assertEquals(22,packet.getEntityLength());
+		assertEquals("_message_private",packet.getMethod());
+		assertEquals("OHAI",packet.getPayload());
+		assertTrue(packet.getEntityVars().isEmpty());
+
+	}
+	
+	@Test
+	public void testLengthNoValue() {
+		String raw = ":_source\tpsyc://foo.example.com/\n" +
+			":_target\tpsyc://bar.example.com/\n"+
+			"\n"+
+			":_foo 0\n"+	
+			"_message_private\n"+
+			"OHAI\n"+
+			"|\n";
+		
+		Packet packet = parse(raw);
+		
+		assertEquals("psyc://foo.example.com/", packet.getRoutingVars().getVarValue("_source").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_source").getOperator());
+		assertEquals("psyc://bar.example.com/", packet.getRoutingVars().getVarValue("_target").getValue());
+		assertEquals(":", packet.getRoutingVars().getVarValue("_target").getOperator());
+		
+		assertEquals(0,packet.getEntityLength());
+		assertEquals("_message_private",packet.getMethod());
+		assertEquals("OHAI",packet.getPayload());
+		
+		assertEquals(":",packet.getEntityVars().getVarValue("_foo").getOperator());
+	}
+	
+	@Test
 	public void testOnlyVarLength() {
 		String raw = ":_source\tpsyc://foo/~bar\n" +
 			":_target\tpsyc://bar/~baz\n"+
@@ -310,7 +415,7 @@ public class RawpacketsTest {
 		assertEquals(":",packet.getEntityVars().getVarValue("_abc_def").getOperator());
 		//TODO include length for vars and add assert here
 		
-		assertEquals("ohai there!\n\\o/\n", packet.getPayload());
+		assertEquals("ohai there!\n\\o/", packet.getPayload());
 	}
 	
 	@Test
@@ -343,7 +448,7 @@ public class RawpacketsTest {
 		assertEquals(":",packet.getEntityVars().getVarValue("_abc_def").getOperator());
 		//TODO include length for vars and add assert here
 		
-		assertEquals("ohai there!\n\\o/\n", packet.getPayload());
+		assertEquals("ohai there!\n\\o/", packet.getPayload());
 	}
 	
 	@Test
@@ -400,6 +505,7 @@ public class RawpacketsTest {
 		assertTrue(packet.getEntityVars().isEmpty());
 		assertTrue(packet.getMethod().equals("_message_private"));
 		assertTrue(packet.getPayload().equals("|||\n|\n|"));
+		assertEquals(25, packet.getEntityLength());
 	}
 	
 	private void testParsingOfPacket(File file) throws IOException {
