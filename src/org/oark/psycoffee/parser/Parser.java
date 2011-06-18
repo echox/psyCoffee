@@ -32,13 +32,14 @@ public abstract class Parser {
 	protected int getStringByBytes(int bytes, StringBuffer target, String raw[], int idx) {
 		
 		int bytesToRead = bytes;
+		String[] lines = raw.clone();
 		
 		//quickhack
-		raw[idx] = raw[idx].split("\t")[1];
+		lines[idx] = lines[idx].split("\t")[1];
 		
 		int lineIdx;
 		for(lineIdx = idx; bytesToRead > 0; lineIdx++) {
-			String line = raw[lineIdx];
+			String line = lines[lineIdx];
 			if (line.getBytes().length < bytesToRead) {
 				target.append(line+"\n");
 				bytesToRead -= line.getBytes().length+1;
@@ -136,28 +137,55 @@ public abstract class Parser {
 		packet.setMethod("");
 		VarCollection vars = packet.getRoutingVars();
 		StringBuffer payload = new StringBuffer();
+		long bytesToRead = 0;
+		int entityStart = 0;
 		
-		
-		for (int i = 0; i < lines.length; i++) {
+		for (int lineIdx = 0; lineIdx < lines.length; lineIdx++) {
 
 				if (gotMethod == false) {
-					i = parseVars(lines,vars,i);
+					lineIdx = parseVars(lines,vars,lineIdx);
 				}
 				
-				String line = lines[i];	
+				String line = lines[lineIdx];	
 					
 				if(("".equals(line) || line.matches("[0-9]+")) && gotMethod == false) {
 					if (gotMethod == false && line.matches("[0-9]+")) {
 						//TODO add parsing of length							
 						packet.setEntityLength(new Long(line));
+						bytesToRead = packet.getEntityLength();
+						entityStart = lineIdx+1;
 					}
 					vars = packet.getEntityVars();
 				} else if (isMethod(line) && gotMethod == false) {
 					packet.setMethod(line);
 					gotMethod = true;
+					
+					if(entityStart != 0) {
+						//calc length to read
+						for(int i = entityStart; i <= lineIdx; i++) {
+							bytesToRead -= lines[i].getBytes().length + 1;
+						}
+					}
 				} else if (gotMethod == true) {
-					if ("|".equals(line)) {
-						
+					
+					if(entityStart == 0) {
+						if ("|".equals(line)) {
+							//finish packet and do callbacks
+							packet.setPayload(payload.toString());
+							dispatch(packet, context);
+							
+							//reset
+							gotMethod = false;
+							packet = new Packet();
+							vars = packet.getRoutingVars();
+							payload = new StringBuffer();
+						} else {
+							payload.append(line+"\n");
+						} 
+					} else if (bytesToRead > 0) {
+						payload.append(line+"\n");
+						bytesToRead -= line.getBytes().length + 1;
+					} else if (bytesToRead <= 0) {
 						//finish packet and do callbacks
 						packet.setPayload(payload.toString());
 						dispatch(packet, context);
@@ -167,8 +195,6 @@ public abstract class Parser {
 						packet = new Packet();
 						vars = packet.getRoutingVars();
 						payload = new StringBuffer();
-					} else {
-						payload.append(line+"\n");
 					}
 				} else {
 					if("|".equals(line)) {
