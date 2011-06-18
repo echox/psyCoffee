@@ -75,7 +75,7 @@ public class RawpacketsTest {
 		assertTrue(packet.getRoutingVars().isEmpty());
 		assertTrue(packet.getEntityVars().isEmpty());
 		assertEquals("_message_private", packet.getMethod());
-		assertEquals("OHAI\n", packet.getPayload());
+		assertEquals("OHAI", packet.getPayload());
 	}
 	
 	@Test
