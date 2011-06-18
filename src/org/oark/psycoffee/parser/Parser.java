@@ -146,11 +146,12 @@ public abstract class Parser {
 				
 				String line = lines[i];	
 					
-				if("".equals(line) && gotMethod == false) {
+				if(("".equals(line) || line.matches("[0-9]+")) && gotMethod == false) {
+					if (gotMethod == false && line.matches("[0-9]+")) {
+						//TODO add parsing of length							
+						packet.setEntityLength(new Long(line));
+					}
 					vars = packet.getEntityVars();
-				} else if (gotMethod == false && line.matches("[0-9]*")) {
-					//TODO add parsing of length							
-					packet.setEntityLength(new Long(line));
 				} else if (isMethod(line) && gotMethod == false) {
 					packet.setMethod(line);
 					gotMethod = true;
