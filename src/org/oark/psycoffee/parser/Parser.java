@@ -181,8 +181,13 @@ public abstract class Parser {
 							payload.append(line+"\n");
 						} 
 					} else if (bytesToRead > 0) {
-						payload.append(line+"\n");
+						
 						bytesToRead -= line.getBytes().length + 1;
+						if (bytesToRead == 0) {
+							payload.append(line);
+						} else {
+							payload.append(line+"\n");							
+						}
 					} else if (bytesToRead <= 0) {
 						//TODO cleanup copy and paste section
 						//finish packet and do callbacks
